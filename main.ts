@@ -1,53 +1,46 @@
-import { App, CachedMetadata, MarkdownView, Plugin, TFile } from "obsidian";
+import { App, CachedMetadata, Plugin, TFile } from "obsidian";
 import { ulid } from "ulid";
 
 // useful reference: https://github.com/salmund/obsidian-date-in-metadata/blob/6a552fe27658688b5fb87a8975c80749e80e184a/main.ts
 
 export default class IDPlugin extends Plugin {
 	async onload() {
-		async function addID(app: App, f: TFile) {
-			setTimeout(() => _addID(app, f));
+		async function addID(
+			app: App,
+			f: TFile,
+			metadata?: CachedMetadata
+		): Promise<void> {
+			// I got the setTimeout trick from
+			// salmund/obsidian-date-in-metadata, it seems to avoid the
+			// infinite loop I was getting though I don't understand why
+			setTimeout(() => _addID(app, f, metadata));
 		}
 
-		async function _addID(app: App, f: TFile) {
-			let view = app.workspace.getActiveViewOfType(MarkdownView);
-			// can't say I understand when this would happen. Maybe when
-			// editing a non-markdown file?
-			if (!view) {
-				console.log("null view", view);
+		async function _addID(
+			app: App,
+			f: TFile,
+			metadata?: CachedMetadata
+		): Promise<void> {
+			let contents = await app.vault.cachedRead(f);
+			const meta = metadata || app.metadataCache.getFileCache(f);
+
+			// make sure we exit out without modifying the file if it already has an id so that we don't infinitely loop
+			if (meta?.frontmatter?.hasOwnProperty("id")) {
 				return;
 			}
 
-			let active_editor = view.editor;
-			const cursor = view.editor.getCursor();
-
-			// if the file is empty, replace the current cursor with front matter
-			if (active_editor.getValue() == "") {
-				active_editor.replaceRange(
-					`---\nid: ${ulid()}\n---\n\n`,
-					cursor
-				);
-				return;
+			if (meta?.frontmatter) {
+				if (!meta.frontmatter.hasOwnProperty("id")) {
+					contents = contents.replace(
+						"\n---",
+						`\nid: ${ulid()}\n---`
+					);
+				}
+			} else {
+				contents = `---\nid: ${ulid()}\n---\n\n${contents}`;
 			}
 
-			let text = await app.vault.cachedRead(f);
-			let fmc = app.metadataCache.getFileCache(f)?.frontmatter;
-			if (!fmc) {
-				// tbh I don't understand why we don't hit this, but I'm copying
-				// the plugin that already works :shrug:
-				console.error("Should not get here", f);
-				return;
-			}
-			let end = fmc.position.end.line + 1;
-			const body = text.split("\n").slice(end).join("\n");
-
-			// taken from the date plugin. I'm not sure why two replace ranges works.
-			active_editor.setValue("");
-			active_editor.replaceRange(body, cursor);
-			active_editor.replaceRange(
-				body.replace("\n---", `\nid: ${ulid()}\n---`),
-				cursor
-			);
+			await app.vault.modify(f, contents);
 		}
 
 		this.app.vault.getMarkdownFiles().forEach(async (f: TFile) => {
@@ -57,8 +50,8 @@ export default class IDPlugin extends Plugin {
 		// Called when a file has been indexed, and its (updated) cache is now available.
 		this.app.metadataCache.on(
 			"changed",
-			async (f: TFile, _: string, __: CachedMetadata) => {
-				await addID(this.app, f);
+			async (f: TFile, _: string, meta: CachedMetadata) => {
+				await addID(this.app, f, meta);
 			}
 		);
 	}
