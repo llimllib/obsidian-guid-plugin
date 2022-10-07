@@ -6,3 +6,9 @@ main.js: main.ts
 install: main.js
 	mkdir -p $(VAULT)/.obsidian/plugins/obsidian-guid-plugin/
 	cp {manifest.json,main.js} $(VAULT)/.obsidian/plugins/obsidian-guid-plugin/
+
+ci:
+	npm ci
+	node_modules/.bin/eslint *.ts
+
+.PHONY: install ci
