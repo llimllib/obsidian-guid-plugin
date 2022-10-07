@@ -21,24 +21,25 @@ export default class IDPlugin extends Plugin {
 			f: TFile,
 			metadata?: CachedMetadata
 		): Promise<void> {
+			const key = "id";
 			let contents = await app.vault.cachedRead(f);
 			const meta = metadata || app.metadataCache.getFileCache(f);
 
 			// make sure we exit out without modifying the file if it already
 			// has an id so that we don't infinitely loop
-			if (meta?.frontmatter?.hasOwnProperty("id")) {
+			if (meta?.frontmatter?.hasOwnProperty(key)) {
 				return;
 			}
 
 			if (meta?.frontmatter) {
-				if (!meta.frontmatter.hasOwnProperty("id")) {
+				if (!meta.frontmatter.hasOwnProperty(key)) {
 					contents = contents.replace(
 						"\n---",
-						`\nid: ${ulid()}\n---`
+						`\n${key}: ${ulid()}\n---`
 					);
 				}
 			} else {
-				contents = `---\nid: ${ulid()}\n---\n\n${contents}`;
+				contents = `---\n${key}: ${ulid()}\n---\n\n${contents}`;
 			}
 
 			await app.vault.modify(f, contents);
