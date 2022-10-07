@@ -24,7 +24,8 @@ export default class IDPlugin extends Plugin {
 			let contents = await app.vault.cachedRead(f);
 			const meta = metadata || app.metadataCache.getFileCache(f);
 
-			// make sure we exit out without modifying the file if it already has an id so that we don't infinitely loop
+			// make sure we exit out without modifying the file if it already
+			// has an id so that we don't infinitely loop
 			if (meta?.frontmatter?.hasOwnProperty("id")) {
 				return;
 			}
