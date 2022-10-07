@@ -1,4 +1,4 @@
-import { App, CachedMetadata, Plugin, TFile } from "obsidian";
+import { debounce, App, CachedMetadata, Plugin, TFile } from "obsidian";
 import { ulid } from "ulid";
 
 // useful reference: https://github.com/salmund/obsidian-date-in-metadata/blob/6a552fe27658688b5fb87a8975c80749e80e184a/main.ts
@@ -52,9 +52,9 @@ export default class IDPlugin extends Plugin {
 		// Called when a file has been indexed, and its (updated) cache is now available.
 		this.app.metadataCache.on(
 			"changed",
-			async (f: TFile, _: string, meta: CachedMetadata) => {
+			debounce(async (f: TFile, _: string, meta: CachedMetadata) => {
 				await addID(this.app, f, meta);
-			}
+			}, 2000)
 		);
 	}
 
