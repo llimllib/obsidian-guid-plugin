@@ -17,7 +17,7 @@ export default class IDPlugin extends Plugin {
             // If you want to read the content, change it, and then write it
             // back to disk, then use read() to avoid potentially overwriting
             // the file with a stale copy.
-            let contents = await app.vault.read(f);
+            const contents = await app.vault.read(f);
 
             const { data, content } = matter(contents);
 
@@ -39,6 +39,4 @@ export default class IDPlugin extends Plugin {
             }, 2000)
         );
     }
-
-    onunload() {}
 }
