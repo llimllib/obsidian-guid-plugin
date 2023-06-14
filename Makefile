@@ -12,7 +12,7 @@ dist:
 	mkdir dist
 
 $(TARGET): dist main.ts
-	tsc -noEmit -skipLibCheck && node esbuild.config.mjs production
+	tsc -noEmit -skipLibCheck && node esbuild.config.mjs
 
 .PHONY: clean
 clean:
