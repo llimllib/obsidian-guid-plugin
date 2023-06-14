@@ -1,14 +1,29 @@
 VAULT=~/code/tmp/obsidian-plugin-testing
+PROJECT=obsidian-guid-plugin
+TARGET=dist/main.js
+PROJDIR=$(VAULT)/.obsidian/plugins/$(PROJECT)
 
-main.js: main.ts
+.PHONY: install
+install: clean $(TARGET)
+	mkdir -p $(PROJDIR)
+	cp {manifest.json,$(TARGET)} $(PROJDIR)
+
+dist:
+	mkdir dist
+
+$(TARGET): dist main.ts
 	tsc -noEmit -skipLibCheck && node esbuild.config.mjs production
 
-install: main.js
-	mkdir -p $(VAULT)/.obsidian/plugins/obsidian-guid-plugin/
-	cp {manifest.json,main.js} $(VAULT)/.obsidian/plugins/obsidian-guid-plugin/
+.PHONY: clean
+clean:
+	rm -rf $(PROJDIR)
+		
+.PHONY: watch
+watch:
+	watchfiles "make" $$(fd -g --exclude node_modules --exclude dist "*.{ts,js}")
 
 ci:
 	npm ci
-	node_modules/.bin/eslint *.ts
+	node_modules/.bin/eslint .
 
 .PHONY: install ci
