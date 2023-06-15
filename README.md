@@ -1,6 +1,9 @@
 # Obsidian GUID plugin
 
-Add a unique id to every markdown file (specifically an [ulid](https://github.com/ulid/spec))
+This plugin will:
+
+-   Add an unique ID to the front matter of every markdown file you edit.
+-   Create a command `Add an ID to all notes` which will... add an ID to all notes
 
 ## Obsidian Documentation
 
