@@ -1,10 +1,10 @@
 {
-	"id": "obsidian-guid-plugin",
-	"name": "Obsidian GUID Plugin",
-	"version": "1.0.0",
-	"minAppVersion": "0.15.0",
-	"description": "Add a guid to every document",
-	"author": "Bill Mill",
-	"authorUrl": "https://billmill.org",
-	"isDesktopOnly": false
+    "id": "obsidian-guid-plugin",
+    "name": "Add an ID to the front matter",
+    "version": "1.0.0",
+    "minAppVersion": "0.15.0",
+    "description": "Add a globally unique ID to every markdown document's front matter",
+    "author": "Bill Mill",
+    "authorUrl": "https://billmill.org",
+    "isDesktopOnly": false
 }
