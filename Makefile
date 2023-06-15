@@ -23,6 +23,7 @@ clean:
 watch:
 	watchfiles "make" $$(fd -g --exclude node_modules --exclude dist "*.{ts,js}")
 
+.PHONY: ci
 ci:
 	npm ci
 	node_modules/.bin/eslint .
@@ -35,6 +36,3 @@ production:
 .PHONY: release
 release: clean production
 	gh release create $$(jq -r .version manifest.json) dist/main.js manifest.json
-
-
-.PHONY: install ci
