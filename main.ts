@@ -1,8 +1,13 @@
-import { debounce, App, Plugin, TFile } from "obsidian";
 import matter from "gray-matter";
+import {
+    App,
+    debounce,
+    Debouncer,
+    Plugin,
+    PluginManifest,
+    TFile,
+} from "obsidian";
 import { ulid } from "ulid";
-
-let isCurrentlyEnabled = false;
 
 async function addID(app: App, f: TFile): Promise<void> {
     // I got the setTimeout trick from
@@ -12,8 +17,6 @@ async function addID(app: App, f: TFile): Promise<void> {
 }
 
 async function _addID(app: App, f: TFile): Promise<void> {
-    if (!isCurrentlyEnabled) return;
-
     const key = "id";
 
     // If you want to read the content, change it, and then write it
@@ -36,16 +39,19 @@ function addIDsToAllNotes(app: App) {
 }
 
 export default class IDPlugin extends Plugin {
-    async onload() {
-        isCurrentlyEnabled = true;
+    handleChange: Debouncer<[f: TFile], Promise<void>>;
 
-        // Called when a file has been indexed, and its (updated) cache is now available.
-        this.app.metadataCache.on(
-            "changed",
-            debounce(async (f: TFile) => {
-                await addID(this.app, f);
-            }, 2000)
-        );
+    constructor(app: App, manifest: PluginManifest) {
+        super(app, manifest);
+        this.handleChange = debounce(async (f: TFile) => {
+            await addID(this.app, f);
+        }, 2000);
+    }
+
+    async onload() {
+        // Called when a file has been indexed, and its (updated) cache is now
+        // available.
+        this.app.metadataCache.on("changed", this.handleChange);
 
         this.addCommand({
             id: "add-ids-to-all-notes",
@@ -55,6 +61,6 @@ export default class IDPlugin extends Plugin {
     }
 
     async onunload() {
-        isCurrentlyEnabled = false;
+        this.app.metadataCache.off("changed", this.handleChange);
     }
 }
