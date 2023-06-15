@@ -37,6 +37,8 @@ function addIDsToAllNotes(app: App) {
 
 export default class IDPlugin extends Plugin {
     async onload() {
+        isCurrentlyEnabled = true;
+
         // Called when a file has been indexed, and its (updated) cache is now available.
         this.app.metadataCache.on(
             "changed",
