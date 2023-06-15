@@ -1,5 +1,5 @@
 VAULT=~/code/tmp/obsidian-plugin-testing
-PROJECT=obsidian-guid-plugin
+PROJECT=guid-front-matter
 TARGET=dist/main.js
 PROJDIR=$(VAULT)/.obsidian/plugins/$(PROJECT)
 

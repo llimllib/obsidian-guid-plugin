@@ -1,7 +1,7 @@
 {
     "id": "guid-front-matter",
     "name": "Add an ID to the front matter",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "minAppVersion": "0.15.0",
     "description": "Add a globally unique ID to every markdown document's front matter",
     "author": "Bill Mill",
