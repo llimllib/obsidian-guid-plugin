@@ -1,12 +1,5 @@
 import matter from "gray-matter";
-import {
-    App,
-    debounce,
-    Debouncer,
-    Plugin,
-    PluginManifest,
-    TFile,
-} from "obsidian";
+import { App, debounce, Plugin, TFile } from "obsidian";
 import { ulid } from "ulid";
 
 async function addID(app: App, f: TFile): Promise<void> {
@@ -39,28 +32,22 @@ function addIDsToAllNotes(app: App) {
 }
 
 export default class IDPlugin extends Plugin {
-    handleChange: Debouncer<[f: TFile], Promise<void>>;
-
-    constructor(app: App, manifest: PluginManifest) {
-        super(app, manifest);
-        this.handleChange = debounce(async (f: TFile) => {
-            await addID(this.app, f);
-        }, 2000);
-    }
-
     async onload() {
         // Called when a file has been indexed, and its (updated) cache is now
         // available.
-        this.app.metadataCache.on("changed", this.handleChange);
+        this.registerEvent(
+            this.app.metadataCache.on(
+                "changed",
+                debounce(async (f: TFile) => {
+                    await addID(this.app, f);
+                }, 2000)
+            )
+        );
 
         this.addCommand({
             id: "add-ids-to-all-notes",
             name: "Add an ID to all notes",
             callback: addIDsToAllNotes(this.app),
         });
-    }
-
-    async onunload() {
-        this.app.metadataCache.off("changed", this.handleChange);
     }
 }
