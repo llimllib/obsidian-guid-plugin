@@ -1,5 +1,5 @@
 {
-    "id": "obsidian-guid-plugin",
+    "id": "guid-front-matter",
     "name": "Add an ID to the front matter",
     "version": "1.0.1",
     "minAppVersion": "0.15.0",
