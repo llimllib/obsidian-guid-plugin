@@ -16,6 +16,7 @@ $(TARGET): dist main.ts
 
 .PHONY: clean
 clean:
+	rm -rf dist/*
 	rm -rf $(PROJDIR)
 		
 .PHONY: watch
@@ -25,5 +26,15 @@ watch:
 ci:
 	npm ci
 	node_modules/.bin/eslint .
+
+.PHONY: production
+production:
+	# build a release minified and without the inline sourcemap
+	tsc -noEmit -skipLibCheck && node esbuild.config.mjs production
+
+.PHONY: release
+release: clean production
+	gh release create $$(jq -r .version manifest.json) dist/main.js manifest.json
+
 
 .PHONY: install ci
