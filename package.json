@@ -1,30 +1,29 @@
 {
-	"name": "obsidian-guid-plugin",
-	"version": "1.0.0",
-	"description": "Add a guid to every obsidian doc",
-	"main": "main.js",
-	"scripts": {
-		"dev": "node esbuild.config.mjs",
-		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-		"version": "node version-bump.mjs && git add manifest.json versions.json"
-	},
-	"keywords": [],
-	"author": "Bill Mill",
-	"license": "MIT",
-	"devDependencies": {
-		"@types/node": "^16.11.6",
-		"@typescript-eslint/eslint-plugin": "5.29.0",
-		"@typescript-eslint/parser": "5.29.0",
-		"builtin-modules": "3.3.0",
-		"esbuild": "0.17.3",
-		"eslint": "^8.42.0",
-		"obsidian": "latest",
-		"prettier": "^2.7.1",
-		"tslib": "2.4.0",
-		"typescript": "4.7.4"
-	},
-	"dependencies": {
-		"gray-matter": "^4.0.3",
-		"ulid": "^2.3.0"
-	}
+    "name": "obsidian-guid-plugin",
+    "version": "1.0.0",
+    "description": "Add a globally unique ID to every markdown document's front matter",
+    "main": "main.js",
+    "scripts": {
+        "dev": "make watch",
+        "build": "make production"
+    },
+    "keywords": [],
+    "author": "Bill Mill",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^16.11.6",
+        "@typescript-eslint/eslint-plugin": "5.29.0",
+        "@typescript-eslint/parser": "5.29.0",
+        "builtin-modules": "3.3.0",
+        "esbuild": "0.17.3",
+        "eslint": "^8.42.0",
+        "obsidian": "latest",
+        "prettier": "^2.7.1",
+        "tslib": "2.4.0",
+        "typescript": "4.7.4"
+    },
+    "dependencies": {
+        "gray-matter": "^4.0.3",
+        "ulid": "^2.3.0"
+    }
 }
