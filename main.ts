@@ -49,7 +49,7 @@ export default class IDPlugin extends Plugin {
 
         this.addCommand({
             id: "add-ids-to-all-notes",
-            name: "Add IDs to all notes",
+            name: "Add an ID to all notes",
             callback: addIDsToAllNotes(this.app),
         });
     }
