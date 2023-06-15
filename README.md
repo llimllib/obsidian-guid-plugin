@@ -7,7 +7,7 @@ This plugin will:
 
 ## Obsidian Documentation
 
-See https://github.com/obsidianmd/obsidian-api
+See https://github.com/obsidianmd/obsidian-api and https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines
 
 ## Making a release
 
