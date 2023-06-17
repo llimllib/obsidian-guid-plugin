@@ -1,6 +1,6 @@
 {
     "name": "guid-front-matter",
-    "version": "1.0.3",
+    "version": "1.1.0",
     "description": "Add a globally unique ID to every markdown document's front matter",
     "main": "main.js",
     "scripts": {
