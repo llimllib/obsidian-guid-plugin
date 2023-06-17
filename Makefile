@@ -1,7 +1,7 @@
-VAULT=~/code/tmp/obsidian-plugin-testing
-PROJECT=guid-front-matter
-TARGET=dist/main.js
-PROJDIR=$(VAULT)/.obsidian/plugins/$(PROJECT)
+VAULT ?= ~/code/tmp/obsidian-plugin-testing
+PROJECT = guid-front-matter
+TARGET = dist/main.js
+PROJDIR = $(VAULT)/.obsidian/plugins/$(PROJECT)
 
 .PHONY: install
 install: clean $(TARGET)
