@@ -1,53 +1,31 @@
-import matter from "gray-matter";
-import { App, debounce, Plugin, TFile } from "obsidian";
+import { Plugin, TFile } from "obsidian";
 import { ulid } from "ulid";
 
-async function addID(app: App, f: TFile): Promise<void> {
-    // I got the setTimeout trick from
-    // salmund/obsidian-date-in-metadata, it seems to avoid the
-    // infinite loop I was getting though I don't understand why
-    setTimeout(() => _addID(app, f));
-}
-
-async function _addID(app: App, f: TFile): Promise<void> {
+async function addID(f: TFile): Promise<void> {
     const key = "id";
-
-    // If you want to read the content, change it, and then write it
-    // back to disk, then use read() to avoid potentially overwriting
-    // the file with a stale copy.
-    const contents = await app.vault.read(f);
-
-    const { data, content } = matter(contents);
-
-    if (!data.hasOwnProperty(key)) {
-        data[key] = ulid();
-        await app.vault.modify(f, matter.stringify(content, data));
+    console.log("checking file {f}");
+    if (!app.metadataCache.getFileCache(f)?.frontmatter?.[key]) {
+        console.log("adding id {f}");
+        await app.fileManager.processFrontMatter(f, (data) => {
+            data[key] = ulid();
+        });
     }
 }
 
-function addIDsToAllNotes(app: App) {
-    return () => {
-        app.vault.getMarkdownFiles().forEach((f) => _addID(app, f));
-    };
+function addIDsToAllNotes() {
+    app.vault.getMarkdownFiles().forEach((f) => addID(f));
 }
 
 export default class IDPlugin extends Plugin {
     async onload() {
         // Called when a file has been indexed, and its (updated) cache is now
         // available.
-        this.registerEvent(
-            this.app.metadataCache.on(
-                "changed",
-                debounce(async (f: TFile) => {
-                    await addID(this.app, f);
-                }, 2000)
-            )
-        );
+        this.registerEvent(this.app.metadataCache.on("changed", addID));
 
         this.addCommand({
             id: "add-ids-to-all-notes",
             name: "Add an ID to all notes",
-            callback: addIDsToAllNotes(this.app),
+            callback: addIDsToAllNotes,
         });
     }
 }
